@@ -1,20 +1,12 @@
-int placementA[5];
-int i;
-
-placementA[0] = 2;
-placementA[1] = 0;
-placementA[2] = 1;
-placementA[3] = 3;
-placementA[4] = 4;
+int placementA[5] = {2,0,1,3,4};
 
 proctype printArray()
 {
-	for(i : 0 .. placementA.length){
+	int i;
+	for(i : 0 .. 5){
 		if
-		:: placementA[i] == 0 -> 
-			printf("EMPTY " + placementA[i] + ", ")
-		:: else ->
-			printf("FROG" + i + "@" + placementA[i] + ", ")
+		:: placementA[i] == 0 -> printf("EMPTY %u,", placementA[i]);
+		:: else -> printf("FROG%u@%u,",i, placementA[i]);
 		fi
 	}
 }
@@ -27,11 +19,11 @@ active proctype FROG1() {
 			int temp = placementA[0];
 			placementA[0] = placementA[1];
 			placementA[1] = temp;
-			printf("FROG1 FROM " + placementA[0] + " TO " + placementA[1]);
+			printf("FROG1 FROM %u TO %u",placementA[0],placementA[1]);
 			run printArray();
 			}
 		else 
-		fi
+	   fi
 	od
 }
 
@@ -43,7 +35,7 @@ active proctype FROG2() {
 			int temp = placementA[0];
 			placementA[0] = placementA[2];
 			placementA[2] = temp;
-			printf("FROG2 FROM " + placementA[0] + " TO " + placementA[2]);
+			printf("FROG1 FROM %u TO %u",placementA[0],placementA[2]);
 			run printArray();
 			}
 		else 
@@ -59,7 +51,7 @@ active proctype FROG3() {
 			int temp = placementA[0];
 			placementA[0] = placementA[3];
 			placementA[3] = temp;
-			printf("FROG3 FROM " + placementA[0] + " TO " + placementA[3]);
+			printf("FROG1 FROM %u TO %u",placementA[0],placementA[3]);
 			run printArray();
 			}
 		else 
@@ -68,17 +60,22 @@ active proctype FROG3() {
 }
 
 active proctype FROG4() {
-	do 
-	:: if
-		:: placementA[4] - placementA[0] < 3 ->
-			atomic{
-			int temp = placementA[0];
-			placementA[0] = placementA[4];
-			placementA[4] = temp;
-			printf("FROG4 FROM " + placementA[0] + " TO " + placementA[4]);
-			run printArray();
-			}
-		else 
-		fi
-	od
+	if
+	:: placementA[4] == 1 || placementA[4] == 0 ->
+		do 
+		:: if
+			:: placementA[4] - placementA[0] < 3 ->
+				atomic{
+				int temp = placementA[0];
+				placementA[0] = placementA[4];
+				placementA[4] = temp;
+				printf("FROG1 FROM %u TO %u",placementA[0],placementA[4]);
+				run printArray();
+				}
+			else 
+			fi
+		od
+	fi
 }
+
+init{run FROG1();run FROG2();run FROG3();run FROG4();}
